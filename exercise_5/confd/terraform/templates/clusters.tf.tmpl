@@ -46,6 +46,8 @@ module "{{ $cluster }}" {
 
   cmdb_url                      = "{{- getenv "ETCD_NODES" }}"
 
+  docker_registry_url           = "{{- getv (printf "/clusters/%s/defaults/docker_registry_url" $cluster) "NOT_FOUND_IN_STORE" -}}"
+
   vault_url                     = "{{- getv (printf "/clusters/%s/defaults/vault_url" $cluster) "NOT_FOUND_IN_STORE" -}}"
   vault_tls_enabled             = "{{- getv (printf "/clusters/%s/defaults/vault_tls_enabled" $cluster) "true" -}}"
   vault_approle_id_master       = "{{- getv (printf "/clusters/%s/defaults/master_app_role_id" $cluster) "NOT_FOUND_IN_STORE" -}}"

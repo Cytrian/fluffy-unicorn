@@ -34,6 +34,7 @@ resource "matchbox_group" "container-linux-install" {
     consultemplate_config                   = "/etc/consul-template/config.hcl"
     consultemplate_vault_token_file         = "/etc/consul-template/vault_token"
 
+    consultemplate_cmdb_config              = "/etc/consul-template/config-cmdb.hcl"
     consultemplate_cmdbcreds_template       = "/etc/consul-template/cmdb_credentials.tmpl"
     consultemplate_cmdbcreds_rendered       = "/etc/cmdb_credentials.env"
   }
@@ -158,6 +159,9 @@ resource "matchbox_group" "controller" {
     sshd_config_script                      = "/opt/bin/sshd_config_writer"
 
     cert_ttl                                = "${var.cert_ttl}"
+
+    consultemplate_docker_registry_ca       = "/etc/consul-template/docker_registry_ca.tmpl"
+    k8s_docker_registry_url                 = "${var.docker_registry_url}"
   }
 }
 
@@ -173,76 +177,80 @@ resource "matchbox_group" "worker" {
   }
 
   metadata {
-    git_reference                             = "REPLACE_VIA_PIPELINE_WITH_GIT_REFERENCE"
-    cluster_name                              = "${var.cluster_name}"
-    kubernetes_version                        = "${var.kubernetes_version}"
-    k8s_dns_service_ip                        = "${var.kube_dns_service_ip}"
-    k8s_domain_name                           = "${var.k8s_domain_name}"
-    k8s_pod_cidr                              = "${var.pod_cidr}"
-    k8s_api_server_ha_address                 = "${var.api_server_ha_address}"
-    k8s_api_server_vip_address                = "${var.api_server_vip_address}"
-    k8s_api_server_port                       = "${var.api_server_port}"
-    k8s_base_dir                              = "${var.kubernetes_base_dir}"
-    controller_ips                            = "${join(" ", var.controller_ips)}"
+    git_reference                           = "REPLACE_VIA_PIPELINE_WITH_GIT_REFERENCE"
+    cluster_name                            = "${var.cluster_name}"
+    kubernetes_version                      = "${var.kubernetes_version}"
+    k8s_dns_service_ip                      = "${var.kube_dns_service_ip}"
+    k8s_domain_name                         = "${var.k8s_domain_name}"
+    k8s_pod_cidr                            = "${var.pod_cidr}"
+    k8s_api_server_ha_address               = "${var.api_server_ha_address}"
+    k8s_api_server_vip_address              = "${var.api_server_vip_address}"
+    k8s_api_server_port                     = "${var.api_server_port}"
+    k8s_base_dir                            = "${var.kubernetes_base_dir}"
+    controller_ips                          = "${join(" ", var.controller_ips)}"
 
-    assets_host                               = "${format("%s/assets", var.matchbox_http_endpoint)}"
+    assets_host                             = "${format("%s/assets", var.matchbox_http_endpoint)}"
 
-    vault_url                                 = "${var.vault_url}"
-    vault_tls_enabled                         = "${var.vault_tls_enabled}"
-    vault_approle_id                          = "${var.vault_approle_id_worker}"
-    cmdb_url                                  = "${var.cmdb_url}"
+    vault_url                               = "${var.vault_url}"
+    vault_tls_enabled                       = "${var.vault_tls_enabled}"
+    vault_approle_id                        = "${var.vault_approle_id_worker}"
+    cmdb_url                                = "${var.cmdb_url}"
 
-    domain                                    = "${var.cluster_domain}"
+    domain                                  = "${var.cluster_domain}"
 
-    mtu                                       = "${var.mtu}"
-    infra_pod                                 = "${var.infra_pod}"
+    mtu                                     = "${var.mtu}"
+    infra_pod                               = "${var.infra_pod}"
     # Constants used to assert ssot
-    node_env_file                             = "/etc/node.env"
+    node_env_file                           = "/etc/node.env"
 
-    consultemplate_version                    = "${var.consultemplate_version}"
-    consultemplate_sha512                     = "${var.consultemplate_sha512}"
-    consultemplate_cmdb_config                = "/etc/consul-template/config-cmdb.hcl"
-    consultemplate_cmdbcreds_template         = "/etc/consul-template/cmdb_credentials.tmpl"
-    consultemplate_cmdbcreds_rendered         = "/etc/cmdb_credentials.env"
+    consultemplate_version                  = "${var.consultemplate_version}"
+    consultemplate_sha512                   = "${var.consultemplate_sha512}"
+    consultemplate_cmdb_config              = "/etc/consul-template/config-cmdb.hcl"
+    consultemplate_cmdbcreds_template       = "/etc/consul-template/cmdb_credentials.tmpl"
+    consultemplate_cmdbcreds_rendered       = "/etc/cmdb_credentials.env"
 
-    ampua_consultemplate_config               = "/etc/ampua/consul-template.hcl"
-    ampua_credentialfile                      = "/etc/ampua/credentials"
-    ampua_vault_token_file                    = "/etc/ampua/vault_token"
-    check_debug_scriptlocation                = "/opt/bin/check-debug"
+    ampua_consultemplate_config             = "/etc/ampua/consul-template.hcl"
+    ampua_credentialfile                    = "/etc/ampua/credentials"
+    ampua_vault_token_file                  = "/etc/ampua/vault_token"
+    check_debug_scriptlocation              = "/opt/bin/check-debug"
 
-    consultemplate_config                     = "/etc/consul-template/config.hcl"
-    consultemplate_vault_token_file           = "/etc/consul-template/vault_token"
+    consultemplate_config                   = "/etc/consul-template/config.hcl"
+    consultemplate_vault_token_file         = "/etc/consul-template/vault_token"
 
-    consultemplate_k8s_catemplate             = "/etc/consul-template/k8s_ca.tmpl"
-    consultemplate_kubelet_crttemplate        = "/etc/consul-template/kubelet_crt.tmpl"
-    consultemplate_kubelet_keytemplate        = "/etc/consul-template/kubelet_key.tmpl"
-    k8s_cafile                                = "${var.kubernetes_base_dir}/ca.pem"
-    kubelet_crtfile                           = "${var.kubernetes_base_dir}/kubelet_crt.pem"
-    kubelet_keyfile                           = "${var.kubernetes_base_dir}/kubelet_key.pem"
+    consultemplate_k8s_catemplate           = "/etc/consul-template/k8s_ca.tmpl"
+    consultemplate_kubelet_crttemplate      = "/etc/consul-template/kubelet_crt.tmpl"
+    consultemplate_kubelet_keytemplate      = "/etc/consul-template/kubelet_key.tmpl"
+    k8s_cafile                              = "${var.kubernetes_base_dir}/ca.pem"
+    kubelet_crtfile                         = "${var.kubernetes_base_dir}/kubelet_crt.pem"
+    kubelet_keyfile                         = "${var.kubernetes_base_dir}/kubelet_key.pem"
 
-    consultemplate_kube_proxy_crttemplate     = "/etc/consul-template/kube_proxy_crt.tmpl"
-    consultemplate_kube_proxy_keytemplate     = "/etc/consul-template/kube_proxy_key.tmpl"
-    kube_proxy_crtfile                        = "${var.kubernetes_base_dir}/kube_proxy_crt.pem"
-    kube_proxy_keyfile                        = "${var.kubernetes_base_dir}/kube_proxy_key.pem"
+    consultemplate_kube_proxy_crttemplate   = "/etc/consul-template/kube_proxy_crt.tmpl"
+    consultemplate_kube_proxy_keytemplate   = "/etc/consul-template/kube_proxy_key.tmpl"
 
-    label_node_scriptlocation                 = "/opt/bin/label_node"
-    write_hostname_scriptlocation             = "/opt/bin/write_hostname"
+    kube_proxy_crtfile                      = "${var.kubernetes_base_dir}/kube_proxy_crt.pem"
+    kube_proxy_keyfile                      = "${var.kubernetes_base_dir}/kube_proxy_key.pem"
 
-    kubelet_kubeconfig                        = "/var/lib/kubernetes/kubelet_kubeconfig"
-    kube_proxy_kubeconfig                     = "/var/lib/kubernetes/kube_proxy_kubeconfig"
-    kube_proxy_config_writer                  = "/opt/bin/kube_proxy_config_writer"
-    kube_proxy_config                         = "${var.kubernetes_base_dir}/kube_proxy_conf.yaml"
+    label_node_scriptlocation               = "/opt/bin/label_node"
+    write_hostname_scriptlocation           = "/opt/bin/write_hostname"
 
-    check_deploy_scriptlocation               = "/opt/bin/check-deploy"
-    write_failure_domain_scriptlocation       = "/opt/bin/write-failure-domains"
-    haproxy_configwriter_scriptlocation       = "/opt/bin/haproxy_configwriter"
-    haproxy_port                              = "11000"
-    node_eviction                             = "${var.node_eviction}"
-    node_kube_reserved                        = "${var.node_kube_reserved}"
-    node_sys_reserved                         = "${var.node_sys_reserved}"
+    kubelet_kubeconfig                      = "/var/lib/kubernetes/kubelet_kubeconfig"
+    kube_proxy_kubeconfig                   = "/var/lib/kubernetes/kube_proxy_kubeconfig"
+    kube_proxy_config_writer                = "/opt/bin/kube_proxy_config_writer"
+    kube_proxy_config                       = "${var.kubernetes_base_dir}/kube_proxy_conf.yaml"
 
-    sshd_config_script                        = "/opt/bin/sshd_config_writer"
+    check_deploy_scriptlocation             = "/opt/bin/check-deploy"
+    write_failure_domain_scriptlocation     = "/opt/bin/write-failure-domains"
+    haproxy_configwriter_scriptlocation     = "/opt/bin/haproxy_configwriter"
+    haproxy_port                            = "11000"
+    node_eviction                           = "${var.node_eviction}"
+    node_kube_reserved                      = "${var.node_kube_reserved}"
+    node_sys_reserved                       = "${var.node_sys_reserved}"
 
-    cert_ttl                                  = "${var.cert_ttl}"
+    sshd_config_script                      = "/opt/bin/sshd_config_writer"
+
+    cert_ttl                                = "${var.cert_ttl}"
+
+    consultemplate_docker_registry_ca       = "/etc/consul-template/docker_registry_ca.tmpl"
+    k8s_docker_registry_url                 = "${var.docker_registry_url}"
   }
 }

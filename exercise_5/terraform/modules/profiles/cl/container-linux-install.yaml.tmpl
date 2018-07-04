@@ -26,7 +26,7 @@ systemd:
         ExecStartPre=/opt/bin/vault_token_fetcher {{.consultemplate_vault_token_file}}
         ExecStartPre=/opt/bin/consul-template \
           -once \
-          -config={{.consultemplate_config}}
+          -config={{.consultemplate_cmdb_config}}
         ExecStart=/opt/installer
 
         Restart=on-failure
@@ -35,7 +35,7 @@ systemd:
         WantedBy=multi-user.target
 storage:
   files:
-    - path: {{.consultemplate_config}}
+    - path: {{.consultemplate_cmdb_config}}
       filesystem: root
       mode: 0600
       contents:

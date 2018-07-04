@@ -201,3 +201,9 @@ variable infra_pod {
   default     = "gcr.io/google_containers/pause-amd64:3.1"
   description = "Infrastructure pod"
 }
+
+variable "docker_registry_url" {
+  description = "URL for docker-registry"
+  type        = "string"
+}
+

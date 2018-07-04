@@ -24,6 +24,7 @@ inovex:
           install_disk: "/dev/sda"
           pod_cidr: "100.64.0.0/13"
           service_cidr: "100.72.0.0/16"
+          docker_registry_url: "docker-regi.foo"
           master_eviction: "memory.available<100Mi"
           node_eviction: "memory.available<100Mi"
           master_kube_reserved: "cpu=100m,memory=128Mi"
