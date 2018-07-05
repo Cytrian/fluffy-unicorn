@@ -17,6 +17,12 @@ Vagrant.configure(2) do |config|
       config.vm.provision "shell", path: "scripts/etcd.sh"
       config.vm.provision "shell", path: "scripts/vault.sh"
       config.vm.provision "shell", path: "scripts/terraform.sh"
+
+      # for docker-registry
+      config.vm.provision "shell",
+        run: "always",
+        inline: "ip addr add 192.168.0.253/24 dev eth1"
+
       config.vm.provision "shell", path: "scripts/docker_registry.sh"
 
       config.vm.provider :libvirt do |lv|
@@ -42,5 +48,7 @@ Vagrant.configure(2) do |config|
                         libvirt__network_name: "pxe_network",
                         :libvirt__dhcp_enabled => false,
                         virtualbox__intnet: "pxe_network"
+
+ 
   end
 end

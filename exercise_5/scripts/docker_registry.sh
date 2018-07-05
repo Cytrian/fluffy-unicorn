@@ -87,9 +87,9 @@ docker run -d \
   --restart=always \
   --name registry \
   -v $PWD/certs:/certs \
-  -e REGISTRY_HTTP_ADDR=0.0.0.0:444 \
+  -e REGISTRY_HTTP_ADDR=0.0.0.0:443 \
   -e REGISTRY_HTTP_TLS_CERTIFICATE=/certs/docker.crt \
   -e REGISTRY_HTTP_TLS_KEY=/certs/docker.pem \
-  -p 444:444 \
+  -p 192.168.0.253:443:443 \
   registry:2
 

@@ -160,6 +160,7 @@ resource "matchbox_group" "controller" {
 
     cert_ttl                                = "${var.cert_ttl}"
 
+    consultemplate_etc_hosts                = "/etc/consul-template/etc_hosts.tmpl"
     consultemplate_docker_registry_ca       = "/etc/consul-template/docker_registry_ca.tmpl"
     k8s_docker_registry_url                 = "${var.docker_registry_url}"
   }
@@ -250,6 +251,7 @@ resource "matchbox_group" "worker" {
 
     cert_ttl                                = "${var.cert_ttl}"
 
+    consultemplate_etc_hosts                = "/etc/consul-template/etc_hosts.tmpl"
     consultemplate_docker_registry_ca       = "/etc/consul-template/docker_registry_ca.tmpl"
     k8s_docker_registry_url                 = "${var.docker_registry_url}"
   }

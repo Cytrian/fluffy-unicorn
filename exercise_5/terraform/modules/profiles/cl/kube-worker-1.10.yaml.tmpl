@@ -302,9 +302,17 @@ storage:
            right_delimiter = "]]"
          }
          template {
-           source = "/etc/consul-template/docker_registry_ca.tmpl"
+           source = "{{.consultemplate_docker_registry_ca}}"
            destination = "/etc/docker/certs.d/{{.k8s_docker_registry_url}}/ca.crt"
            command = "/bin/sh -c 'cd /etc/docker/certs.d/{{.k8s_docker_registry_url}}/; cp ca.crt $(openssl x509 -in ca.crt -subject_hash -noout).crt'"
+           perms = 0644
+           # Required to not have matchbox interpolate
+           left_delimiter  = "[["
+           right_delimiter = "]]"
+         }
+         template {
+           source = "{{.consultemplate_etc_hosts}}"
+           destination = "/etc/hosts"
            perms = 0644
            # Required to not have matchbox interpolate
            left_delimiter  = "[["
@@ -355,6 +363,14 @@ storage:
           [[- $ttl_arg := printf "ttl=%s" "{{.cert_ttl}}" -]]
           [[- with secret "/inovex/{{.cluster_name}}-k8s/issue/kubelet" $cn_arg $san_arg $ip_arg $ttl_arg -]]
           [[ .Data.private_key ]][[ end ]]
+    - path: {{.consultemplate_etc_hosts}}
+      filesystem: root
+      mode: 0644
+      contents:
+        inline: |
+          127.0.0.1      localhost
+          ::1            localhost
+          192.168.0.253  {{.k8s_docker_registry_url}}
     - path: {{.consultemplate_docker_registry_ca}}
       filesystem: root
       mode: 0600
