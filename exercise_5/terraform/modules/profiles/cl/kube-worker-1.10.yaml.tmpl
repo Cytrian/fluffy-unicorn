@@ -157,6 +157,8 @@ systemd:
           --mount volume=var-lib-cni,target=/var/lib/cni \
           --volume opt-cni,kind=host,source=/opt/cni/bin \
           --mount volume=opt-cni,target=/opt/cni/bin \
+          --volume var-lib-calico,kind=host,source=/var/lib/calico \
+          --mount volume=var-lib-calico,target=/var/lib/calico \
           --volume etc-cni,kind=host,source=/etc/cni/net.d \
           --mount volume=etc-cni,target=/etc/cni/net.d \
           --volume kube-config,kind=host,source={{.kubelet_kubeconfig}} \
@@ -172,6 +174,7 @@ systemd:
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/manifests
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/checkpoint-secrets
         ExecStartPre=/bin/mkdir -p /etc/kubernetes/inactive-manifests
+        ExecStartPre=/bin/mkdir -p /var/lib/calico
         ExecStartPre=/bin/mkdir -p /var/lib/cni
         ExecStartPre=/bin/mkdir -p /opt/cni/bin
         ExecStartPre=/bin/mkdir -p /etc/cni/net.d
